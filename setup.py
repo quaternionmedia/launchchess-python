@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 INSTALL_REQUIRES = [
-    'chess',
+    'python-chess',
     'python-rtmidi',
 ]
 setuptools.setup(
