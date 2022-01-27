@@ -21,13 +21,22 @@ Download a [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface) compat
 
 Edit `config.py` to include the path to this file:
 
-`STOCKFISH='./stockfish_20090216_x64_avx'`
+`STOCKFISH = './stockfish_20090216_x64_avx'`
+
+Optionally, include the name of your Launchpad in `config.py` for automatic connecting:
+
+`LAUNCHPAD = 'Launchpad X:Launchpad X LPX MIDI'`
 
 ### pieces
 Visit [scad-chess](https://github.com/quaternionmedia/scad-chess) for a free 3D printable chess set, which can be printed at any scale, in any color!
 
 ## run
 Plug in your Launchpad and run:
+
+`launchchess`
+
+Or, run the file directly, without installing:
+
 `python3 launchchess/launchchess.py`
 
-Select your midi device, and begin playing!
+Select your midi device if presented, and begin playing!
