@@ -14,6 +14,7 @@ setuptools.setup(
     version=__version__,
     author="Quaternion Media",
     author_email="info@quaternion.media",
+    license='MIT',
     description="Play chess on a Launchpad",
     long_description=long_description,
     long_description_content_type="text/markdown",
