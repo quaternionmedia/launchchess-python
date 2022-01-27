@@ -5,7 +5,7 @@ from time import sleep
 from rtmidi.midiconstants import NOTE_ON, NOTE_OFF, CONTROL_CHANGE
 from string import ascii_lowercase
 import chess.engine
-import config
+from .config import STOCKFISH
 
 colors = {
 '': 0,
@@ -23,11 +23,10 @@ colors = {
 'k': 51,
 }
 
-sf = chess.engine.SimpleEngine.popen_uci(config.STOCKFISH)
-sf.configure({'Threads':1, 'UCI_LimitStrength':True, 'UCI_Elo':1350})
-
 class Chess:
     def __init__(self, invert=False):
+        self.engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH)
+        self.engine.configure({'Threads':1, 'UCI_LimitStrength':True, 'UCI_Elo':1350})
         self.invert = invert
         self.selected = None
         self.moved = False
@@ -79,7 +78,7 @@ class Chess:
             launchOut.send_message([NOTE_ON if self.board.is_checkmate() else NOTE_ON | 1, self.nToLaunch(self.board.king(self.board.turn)), 5])
 
     def engineMove(self):
-        move = sf.play(c.board, chess.engine.Limit(time=1, depth=1, nodes=1)).move
+        move = self.engine.play(c.board, chess.engine.Limit(time=1, depth=1, nodes=1)).move
         print('stockfish moved', move)
         c.board.push(move)
         c.lightBoard()
