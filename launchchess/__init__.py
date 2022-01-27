@@ -1,0 +1,1 @@
+from .launchchess import Chess
