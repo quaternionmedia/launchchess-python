@@ -24,10 +24,13 @@ colors = {
 }
 
 class Chess:
-    def __init__(self, invert=False):
+    def __init__(self, input, output, invert=False):
         self.engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH)
         self.engine.configure({'Threads':1, 'UCI_LimitStrength':True, 'UCI_Elo':1350})
         self.invert = invert
+        self.input = input
+        self.input.set_callback(self, 0)
+        self.output = output
         self.selected = None
         self.moved = False
         self.live = True
@@ -37,7 +40,7 @@ class Chess:
         self.lightBoard()
     def toggleLive(self):
         # switch to / from programming / Live mode
-        launchOut.send_message([240, 0, 32, 41, 2, 12, 14, 1 if self.live else 0, 247])
+        self.output.send_message([240, 0, 32, 41, 2, 12, 14, 1 if self.live else 0, 247])
         self.live = not self.live
     def nToLaunch(self, n):
         # 0-63 mapped to launchpad notes
@@ -53,7 +56,7 @@ class Chess:
     def grid(self):
         for y in range(8):
             for x in range(8):
-                launchOut.send_message([NOTE_ON, 11+x+y*10, 0 if (x+y) % 2 == 0 else 1])
+                self.output.send_message([NOTE_ON, 11+x+y*10, 0 if (x+y) % 2 == 0 else 1])
     def lightBoard(self):
         for i in range(64):
             if self.board.piece_at(i):
@@ -62,20 +65,20 @@ class Chess:
                 piece = None
             l = self.nToLaunch(i)
             # print(i, piece, l)
-            launchOut.send_message([NOTE_ON, l, colors[piece] if piece else 0 if (i + i//8) % 2 == 0 else 1])
+            self.output.send_message([NOTE_ON, l, colors[piece] if piece else 0 if (i + i//8) % 2 == 0 else 1])
         if len(self.board.move_stack):
             self.highlightMove(-1)
             if len(self.board.move_stack) > 1:
                 self.highlightMove(-2)
-        launchOut.send_message([NOTE_ON, 99, 3 if self.board.turn else 83])
+        self.output.send_message([NOTE_ON, 99, 3 if self.board.turn else 83])
     def highlightMove(self, move):
         lastMove = self.board.move_stack[move]
         if not self.board.piece_at(lastMove.from_square):
-            launchOut.send_message([NOTE_ON | 2, self.nToLaunch(lastMove.from_square), 70])
+            self.output.send_message([NOTE_ON | 2, self.nToLaunch(lastMove.from_square), 70])
         if self.board.piece_at(lastMove.to_square):
-            launchOut.send_message([NOTE_ON | 2, self.nToLaunch(lastMove.to_square), colors[self.board.piece_at(lastMove.to_square).symbol()]])
+            self.output.send_message([NOTE_ON | 2, self.nToLaunch(lastMove.to_square), colors[self.board.piece_at(lastMove.to_square).symbol()]])
         if self.board.is_check() or self.board.is_checkmate():
-            launchOut.send_message([NOTE_ON if self.board.is_checkmate() else NOTE_ON | 1, self.nToLaunch(self.board.king(self.board.turn)), 5])
+            self.output.send_message([NOTE_ON if self.board.is_checkmate() else NOTE_ON | 1, self.nToLaunch(self.board.king(self.board.turn)), 5])
 
     def engineMove(self):
         move = self.engine.play(c.board, chess.engine.Limit(time=1, depth=1, nodes=1)).move
@@ -101,12 +104,12 @@ class Chess:
                 self.selected = s
                 square = ascii_lowercase[s%8] + str(1+s//8)
                 print('selected square', square)
-                launchOut.send_message([NOTE_ON | 1, message[1], 21])
+                self.output.send_message([NOTE_ON | 1, message[1], 21])
                 pieceMoves = [i[2:] for i in legal_moves if i[:2] == square]
                 print('possible moves:', pieceMoves)
                 for m in pieceMoves:
                     sq = 8*(int(m[1])-1) + ord(m[0])-97
-                    launchOut.send_message([NOTE_ON | (1 if self.board.piece_at(sq) else 2), self.nToLaunch(sq), 21])
+                    self.output.send_message([NOTE_ON | (1 if self.board.piece_at(sq) else 2), self.nToLaunch(sq), 21])
             elif self.selected is not None:
                 # move selected to square
                 print('moving', chess.square_name(self.selected), chess.square_name(s))
@@ -148,13 +151,10 @@ class Chess:
                 self.invert = not self.invert
                 self.lightBoard()
 
-
-if __name__ == '__main__':
+def main():
     launchOut, p = open_midioutput('Launchpad X:Launchpad X MIDI 2', client_name='launchOut')
     launchIn, p = open_midiinput('Launchpad X:Launchpad X MIDI 2', client_name='launchIn')
-    from random import choice
-    c = Chess(invert=choice([True, False]))
-    launchIn.set_callback(c, 0)
+    c = Chess(invert=False, input=launchIn, output=launchOut)
     # if c.invert:
     #     # if playing as black, engine move first
     #     c.engineMove()
@@ -174,3 +174,6 @@ if __name__ == '__main__':
     finally:
         c.exit()
         print("chess out!")
+
+if __name__ == '__main__':
+    main()
