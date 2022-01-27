@@ -5,7 +5,7 @@ from time import sleep
 from rtmidi.midiconstants import NOTE_ON, NOTE_OFF, CONTROL_CHANGE
 from string import ascii_lowercase
 import chess.engine
-from .config import STOCKFISH
+from launchchess.config import STOCKFISH
 
 colors = {
 '': 0,
