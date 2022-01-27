@@ -81,10 +81,10 @@ class Chess:
             self.output.send_message([NOTE_ON if self.board.is_checkmate() else NOTE_ON | 1, self.nToLaunch(self.board.king(self.board.turn)), 5])
 
     def engineMove(self):
-        move = self.engine.play(c.board, chess.engine.Limit(time=1, depth=1, nodes=1)).move
+        move = self.engine.play(self.board, chess.engine.Limit(time=1, depth=1, nodes=1)).move
         print('stockfish moved', move)
-        c.board.push(move)
-        c.lightBoard()
+        self.board.push(move)
+        self.lightBoard()
     def __call__(self, event, data=None):
         message, deltatime = event
         if message[0] == NOTE_ON and message[2]:
