@@ -5,7 +5,7 @@ from time import sleep
 from rtmidi.midiconstants import NOTE_ON, NOTE_OFF, CONTROL_CHANGE
 from string import ascii_lowercase
 import chess.engine
-from launchchess.config import STOCKFISH
+from launchchess.config import STOCKFISH, LAUNCHPAD
 
 colors = {
 '': 0,
@@ -152,8 +152,8 @@ class Chess:
                 self.lightBoard()
 
 def main():
-    launchOut, p = open_midioutput('Launchpad X:Launchpad X MIDI 2', client_name='launchOut')
-    launchIn, p = open_midiinput('Launchpad X:Launchpad X MIDI 2', client_name='launchIn')
+    launchOut, p = open_midioutput(LAUNCHPAD, client_name='launchOut')
+    launchIn, p = open_midiinput(LAUNCHPAD, client_name='launchIn')
     c = Chess(invert=False, input=launchIn, output=launchOut)
     # if c.invert:
     #     # if playing as black, engine move first
