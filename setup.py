@@ -1,8 +1,8 @@
 import setuptools
 from launchchess._version import __version__
 
-# with open("README.md", "r") as fh:
-#     long_description = fh.read()
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 INSTALL_REQUIRES = [
     'chess',
@@ -14,10 +14,9 @@ setuptools.setup(
     author="Quaternion Media",
     author_email="info@quaternion.media",
     description="Play chess on a Launchpad",
-    # long_description=long_description,
-    # long_description_content_type="text/markdown",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/quaternionmedia/launchchess-python",
-    # packages=setuptools.find_packages(include=['alfred']),
     install_requires=INSTALL_REQUIRES,
     classifiers=[
         "Programming Language :: Python :: 3",
