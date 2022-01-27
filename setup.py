@@ -10,6 +10,7 @@ INSTALL_REQUIRES = [
 ]
 setuptools.setup(
     name="launchchess",
+    packages=['launchchess'],
     version=__version__,
     author="Quaternion Media",
     author_email="info@quaternion.media",
