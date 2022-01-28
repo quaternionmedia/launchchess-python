@@ -2,10 +2,12 @@
 
 Play chess on a Launchpad with python!
 
+This is a standalone python library. For the online web based version, see [LaunchChess](https://github.com/quaternionmedia/launchchess).
+
 ## install
 Installation is optional, and can be skipped if you just want to run the file directly.
 ### pip
-`pip3 install launchchess-python`
+`pip3 install launchchess`
 
 ### local
 `git clone https://github.com/quaternionmedia/launchchess-python.git`
